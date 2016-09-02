@@ -1,0 +1,22 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "D:\\vagrant\\ansible\\trusty-server-cloudimg-amd64-vagrant-disk1.box"
+  config.vm.network "private_network", ip: "192.168.0.10"
+
+  if Vagrant.has_plugin?("vagrant-cachier")
+    config.cache.scope = :box
+  end
+
+  if Vagrant.has_plugin?("vagrant-proxyconf")
+    config.proxy.http = "http://user:password@server:port"
+    config.proxy.https = "http://user:password@server:port"
+  end
+
+  config.omnibus.chef_version = :latest
+  config.vm.provision :chef_solo do |chef|
+    chef.cookbooks_path = ["./cookbooks"]
+    chef.add_recipe "python-django"
+  end
+end
